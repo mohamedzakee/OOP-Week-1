@@ -1,0 +1,702 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Java Fundamentals Lab</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: a workbench — sticky tab rail over one focused lab at a time, code and controls side by side when wide */
+:root{
+  --bg:#f2f4f9; --surface:#ffffff; --ink:#151b2d; --muted:#596179; --line:#d8deea;
+  --accent:#2747c9; --accent-ink:#ffffff; --accent-soft:#e2e7fb; --bit:#e89a0c; --bit-soft:#fdf0d4;
+  --good:#1a8551; --good-soft:#dff3e8; --bad:#c03a3a; --bad-soft:#fbe3e3; --code-bg:#edf0f7;
+  --kw:#7a2fb8; --str:#1a7a4a; --num:#b8560f; --com:#7d8499;
+  --f-display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --f-body:"IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --f-mono:"JetBrains Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#0e1220; --surface:#161b2b; --ink:#e5e8f1; --muted:#99a1b7; --line:#29304a;
+  --accent:#8097ff; --accent-ink:#0e1220; --accent-soft:#1e2752; --bit:#f4b440; --bit-soft:#3a2d10;
+  --good:#45c98a; --good-soft:#123527; --bad:#f07070; --bad-soft:#3d1a1d; --code-bg:#111627;
+  --kw:#c99bff; --str:#7fd7a4; --num:#f5a26a; --com:#7d859c; color-scheme:dark }}
+:root[data-theme="dark"]{
+  --bg:#0e1220; --surface:#161b2b; --ink:#e5e8f1; --muted:#99a1b7; --line:#29304a;
+  --accent:#8097ff; --accent-ink:#0e1220; --accent-soft:#1e2752; --bit:#f4b440; --bit-soft:#3a2d10;
+  --good:#45c98a; --good-soft:#123527; --bad:#f07070; --bad-soft:#3d1a1d; --code-bg:#111627;
+  --kw:#c99bff; --str:#7fd7a4; --num:#f5a26a; --com:#7d859c; color-scheme:dark }
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:15px/1.6 var(--f-body);margin:0}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--surface)}
+.wrap{max-width:1000px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+header{padding-block:28px 18px}
+.eyebrow{font:600 12px/1 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+h1{font:800 clamp(30px,5vw,46px)/1.05 var(--f-display);margin:10px 0 8px;letter-spacing:-.02em;text-wrap:balance}
+h1 .semi{color:var(--accent)}
+.lede{color:var(--muted);max-width:62ch;margin:0}
+h2{font:700 24px/1.2 var(--f-display);margin:0 0 6px;text-wrap:balance}
+h3{font:600 16px/1.3 var(--f-body);margin:0 0 8px}
+p{margin:0}
+.sub{color:var(--muted);max-width:65ch}
+
+nav.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--surface);border-block:1px solid var(--line)}
+nav.tabs .wrap{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}
+nav.tabs .wrap::-webkit-scrollbar{display:none}
+.tab{flex:none;border:0;background:none;color:var(--muted);font:500 14px var(--f-body);padding:13px 12px;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap}
+.tab:hover{color:var(--ink)}
+.tab[aria-selected="true"]{color:var(--accent);border-bottom-color:var(--accent)}
+.tab .n{font:600 11px var(--f-mono);opacity:.6;margin-right:6px}
+button:focus-visible,input:focus-visible,select:focus-visible,.tok:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+main{padding-block:28px 64px}
+section.panel{display:grid;gap:22px}
+.head{display:grid;gap:4px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,400px),1fr));gap:18px;align-items:start}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px;display:grid;gap:12px;min-width:0}
+.label{font:600 11px/1 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+
+pre.code{margin:0;background:var(--code-bg);border:1px solid var(--line);border-radius:8px;padding:14px 16px;font:13px/1.65 var(--f-mono);overflow-x:auto;color:var(--ink);tab-size:4}
+.k{color:var(--kw);font-weight:600}.s{color:var(--str)}.nm{color:var(--num)}.c{color:var(--com);font-style:italic}
+code{font-family:var(--f-mono);font-size:.9em;background:var(--code-bg);padding:1px 5px;border-radius:4px}
+
+.btn{font:600 14px var(--f-body);border-radius:7px;padding:8px 14px;cursor:pointer;border:1px solid var(--accent);background:var(--accent);color:var(--accent-ink)}
+.btn.ghost{background:transparent;color:var(--accent)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+input[type=text],input[type=number],select{font:15px var(--f-mono);background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:7px;padding:8px 10px;min-width:0}
+.chip{font:13px var(--f-mono);border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:5px 11px;cursor:pointer}
+.chip:hover{border-color:var(--accent);color:var(--accent)}
+
+/* Hello world explorer */
+.hello{font:15px/1.9 var(--f-mono);background:var(--code-bg);border:1px solid var(--line);border-radius:8px;padding:16px;overflow-x:auto;white-space:pre}
+.tok{cursor:pointer;border-radius:4px;padding:1px 3px;border-bottom:2px dotted var(--accent)}
+.tok:hover,.tok.on{background:var(--accent-soft)}
+.explain{border-left:3px solid var(--accent);padding:4px 0 4px 14px;min-height:72px}
+.explain b{font-family:var(--f-mono)}
+
+/* Bicycle */
+.bikes{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.bike{border:1px solid var(--line);border-radius:8px;padding:12px;display:grid;gap:6px;background:var(--bg)}
+.bike .name{font:600 13px var(--f-mono)}
+.kv{display:flex;justify-content:space-between;gap:8px;font:13px var(--f-mono)}
+.kv span:first-child{color:var(--muted)}
+.static-box{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;background:var(--accent-soft);border-radius:8px;padding:12px 14px;font-family:var(--f-mono)}
+.log{font:12.5px/1.6 var(--f-mono);background:var(--code-bg);border-radius:8px;padding:10px 12px;min-height:46px;color:var(--muted)}
+.log b{color:var(--ink)}
+.flash{animation:flash .6s}
+@keyframes flash{from{background:var(--bit-soft)}to{background:transparent}}
+
+/* Types */
+.tw{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:middle}
+th{font:600 11px var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+td.m{font-family:var(--f-mono);font-size:13px;white-space:nowrap}
+.bar{display:flex;gap:1px;height:12px}
+.bar i{display:block;width:5px;background:var(--accent);opacity:.75;border-radius:1px}
+.fit{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px}
+.pill{font:600 13px var(--f-mono);border-radius:7px;padding:8px 10px;display:flex;justify-content:space-between;gap:6px;border:1px solid}
+.pill.yes{background:var(--good-soft);color:var(--good);border-color:transparent}
+.pill.no{background:var(--bad-soft);color:var(--bad);border-color:transparent}
+.pill.warn{background:var(--bit-soft);color:var(--bit);border-color:transparent}
+
+/* Bits */
+.bitrows{display:grid;gap:6px;overflow-x:auto;padding-bottom:4px}
+.bitrow{display:grid;grid-template-columns:92px auto 1fr;gap:12px;align-items:center;min-width:max-content}
+.bitrow .lab{font:600 13px var(--f-mono);text-align:right;color:var(--muted)}
+.bitrow.res .lab{color:var(--ink)}
+.cells{display:flex;gap:2px}
+.cells .g{display:flex;gap:2px;margin-right:6px}
+.cell{width:17px;height:24px;display:grid;place-items:center;font:12px var(--f-mono);border-radius:3px;background:var(--code-bg);color:var(--muted);cursor:pointer;border:0;padding:0}
+.cell.on{background:var(--bit);color:#1a1100;font-weight:600}
+.bitrow.res .cell{cursor:default}
+.bitrow.res .cell.on{background:var(--accent);color:var(--accent-ink)}
+.bitrow .dec{font:600 15px var(--f-mono);font-variant-numeric:tabular-nums}
+.rule{height:1px;background:var(--line);margin:2px 0}
+.ops{display:flex;flex-wrap:wrap;gap:6px}
+.op{font:600 14px var(--f-mono);min-width:48px;padding:7px 10px;border-radius:7px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+.op[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.callout{background:var(--accent-soft);border-radius:8px;padding:12px 14px;font-size:14px}
+
+/* Literals & precedence */
+.out{display:grid;gap:8px}
+.outrow{display:grid;grid-template-columns:110px 1fr;gap:10px;font:14px var(--f-mono);align-items:baseline}
+.outrow span:first-child{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.06em}
+.outrow span:last-child{word-break:break-all}
+.err{background:var(--bad-soft);color:var(--bad);border-radius:8px;padding:10px 12px;font-size:14px}
+.ok{background:var(--good-soft);color:var(--good);border-radius:8px;padding:10px 12px;font-size:14px}
+.steps{margin:0;padding:0;list-style:none;display:grid;gap:6px;counter-reset:s}
+.steps li{font:15px var(--f-mono);display:grid;grid-template-columns:28px 1fr;gap:8px;align-items:baseline;overflow-wrap:anywhere}
+.steps li::before{counter-increment:s;content:counter(s);font-size:11px;color:var(--muted);text-align:right}
+.steps mark{background:var(--bit-soft);color:var(--ink);border-radius:3px;padding:0 3px;box-shadow:inset 0 -2px 0 var(--bit)}
+.steps .why{grid-column:2;font:12.5px var(--f-body);color:var(--muted);margin-top:-4px}
+.steps li.final{font-weight:600;color:var(--accent)}
+
+/* Tracer */
+.progs{display:flex;flex-wrap:wrap;gap:6px}
+.console{background:#0d1120;color:#d6dcf0;border-radius:8px;padding:14px 16px;font:13.5px/1.7 var(--f-mono);min-height:120px;overflow-x:auto;white-space:pre}
+.console .p{color:#7c88aa}
+.predict{width:100%;min-height:110px;font:13.5px/1.6 var(--f-mono);background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:10px 12px;resize:vertical}
+.cmp{display:grid;gap:4px;font:13px var(--f-mono)}
+.cmp div{padding:3px 8px;border-radius:4px}
+.cmp .y{background:var(--good-soft);color:var(--good)}
+.cmp .n{background:var(--bad-soft);color:var(--bad)}
+
+/* Quiz */
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.progress{height:6px;background:var(--line);border-radius:3px;overflow:hidden;flex:1;min-width:120px}
+.progress i{display:block;height:100%;background:var(--accent);transition:width .3s}
+.qtext{font-size:17px;font-weight:500}
+.opts{display:grid;gap:8px}
+.opt{text-align:left;font:14.5px var(--f-body);padding:11px 14px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer;display:flex;gap:10px}
+.opt .l{font:600 13px var(--f-mono);color:var(--muted)}
+.opt:hover:not(:disabled){border-color:var(--accent)}
+.opt.right{background:var(--good-soft);border-color:var(--good)}
+.opt.wrong{background:var(--bad-soft);border-color:var(--bad)}
+.opt:disabled{cursor:default}
+.score{font:800 52px/1 var(--f-display);color:var(--accent)}
+
+/* Checklist */
+.checks{display:grid;gap:2px}
+.check{display:flex;gap:12px;align-items:flex-start;padding:10px 4px;border-bottom:1px solid var(--line);cursor:pointer}
+.check input{margin-top:4px;width:18px;height:18px;accent-color:var(--accent);flex:none}
+.check.done span{color:var(--muted);text-decoration:line-through}
+
+@media (max-width:560px){
+  .bitrow{grid-template-columns:64px auto 1fr}
+  .outrow{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<header class="wrap">
+  <div class="eyebrow">HNDIT3012 · Object Oriented Programming · Week 2</div>
+  <h1>Java Fundamentals Lab<span class="semi">;</span></h1>
+  <p class="lede">Program structure, variables, data types, literals and operators. Click, type and run things to see how Java actually behaves.</p>
+</header>
+
+<nav class="tabs" aria-label="Lab sections">
+  <div class="wrap" role="tablist" id="tablist"></div>
+</nav>
+
+<main class="wrap">
+
+<!-- 1 STRUCTURE -->
+<section class="panel" id="p-structure" data-title="Program structure">
+  <div class="head"><h2>Anatomy of a Java program</h2>
+  <p class="sub">Save the file as <code>HelloWorldApp.java</code>. If a class is <code>public</code>, the file name must match it exactly. Click any underlined part to see what it does.</p></div>
+  <div class="grid2">
+    <div class="hello" id="hello"></div>
+    <div class="card"><div class="label">Selected</div><div class="explain" id="explain"></div>
+      <div class="label">Run it</div>
+      <pre class="code">javac HelloWorldApp.java   <span class="c">// compile → .class bytecode</span>
+java HelloWorldApp         <span class="c">// run on the JVM</span></pre>
+    </div>
+  </div>
+
+  <div class="head" style="margin-top:12px"><h2>Four kinds of variables</h2>
+  <p class="sub">Create bicycles and speed them up. Each bicycle keeps its own <code>currentSpeed</code> (instance variable). <code>numGears</code> is <code>static</code>, so there is one copy shared by every bicycle.</p></div>
+  <div class="grid2">
+    <pre class="code" id="bikeCode"></pre>
+    <div class="card">
+      <div class="static-box"><span>static int numGears = <b id="gears">6</b></span>
+        <span class="row"><button class="btn ghost" id="gearDown" aria-label="Decrease numGears">−</button><button class="btn ghost" id="gearUp" aria-label="Increase numGears">+</button></span></div>
+      <div class="bikes" id="bikes"></div>
+      <div class="row"><button class="btn" id="newBike">new Bicycle()</button><span class="sub" id="bikeCount"></span></div>
+      <div class="log" id="bikeLog">Click <b>speedUp(5)</b> on a bicycle to watch the parameter and local variable appear and disappear.</div>
+    </div>
+  </div>
+</section>
+
+<!-- 2 TYPES -->
+<section class="panel" id="p-types" data-title="Data types" hidden>
+  <div class="head"><h2>The eight primitive types</h2>
+  <p class="sub">Default values apply to fields only. Local variables get no default and must be assigned before use. <code>String</code> is an object, not a primitive, and its default is <code>null</code>.</p></div>
+  <div class="card tw"><table>
+    <thead><tr><th>Type</th><th>Bits</th><th></th><th>Default</th><th>Range</th></tr></thead>
+    <tbody id="typeRows"></tbody></table></div>
+  <div class="card">
+    <h3>Will it fit?</h3>
+    <p class="sub">Type a whole number. See which types can store it exactly.</p>
+    <div class="row"><input type="text" id="fitIn" value="40000" aria-label="Number to test" inputmode="numeric" style="width:240px">
+      <span class="row" id="fitChips"></span></div>
+    <div class="fit" id="fitOut"></div>
+  </div>
+</section>
+
+<!-- 3 LITERALS -->
+<section class="panel" id="p-literals" data-title="Literals" hidden>
+  <div class="head"><h2>Literal checker</h2>
+  <p class="sub">Write an integer literal the way you would in Java: decimal, <code>0x</code> hex, <code>0b</code> binary, with underscores and an optional <code>L</code>. The checker tells you if it compiles and what value it holds.</p></div>
+  <div class="grid2">
+    <div class="card">
+      <label class="label" for="litIn">Literal</label>
+      <input type="text" id="litIn" value="0x1a" spellcheck="false" autocomplete="off">
+      <div class="row" id="litChips"></div>
+      <div id="litStatus"></div>
+    </div>
+    <div class="card"><div class="label">Same value, every base</div><div class="out" id="litOut"></div></div>
+  </div>
+  <div class="card">
+    <h3>Rules to remember</h3>
+    <ul style="margin:0;padding-left:20px;display:grid;gap:4px">
+      <li>Whole numbers are <code>int</code> by default. Values beyond 2,147,483,647 need an <code>L</code> suffix.</li>
+      <li>Decimals are <code>double</code> by default. <code>float f = 123.4;</code> fails; write <code>123.4f</code>.</li>
+      <li>Underscores go only between digits: never first, last, after <code>0x</code>/<code>0b</code>, or before <code>L</code>/<code>F</code>.</li>
+      <li>A leading <code>0</code> makes a literal <em>octal</em>: <code>010</code> is 8, and <code>09</code> does not compile.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- 4 ARITHMETIC -->
+<section class="panel" id="p-arith" data-title="Precedence" hidden>
+  <div class="head"><h2>Precedence stepper</h2>
+  <p class="sub"><code>*</code> <code>/</code> <code>%</code> run before <code>+</code> <code>-</code>. Equal precedence runs left to right. Parentheses go first. All arithmetic here uses Java <code>int</code> rules, so division truncates.</p></div>
+  <div class="card">
+    <div class="row"><input type="text" id="exIn" value="10 + 6 / 4 * 2" spellcheck="false" aria-label="Integer expression" style="flex:1;min-width:200px"><button class="btn" id="exGo">Evaluate</button></div>
+    <div class="row" id="exChips"></div>
+    <ol class="steps" id="exSteps"></ol>
+  </div>
+  <div class="grid2">
+    <div class="card"><h3>Integer division</h3><p><code>7 / 2</code> is <code>3</code>, not 3.5. Java drops the fraction (truncates toward zero), so <code>-7 / 2</code> is <code>-3</code>. Write <code>7.0 / 2</code> to get 3.5.</p></div>
+    <div class="card"><h3>Remainder</h3><p><code>a % b</code> takes the sign of <code>a</code>: <code>7 % 3</code> is 1, <code>-7 % 3</code> is -1. A common use: <code>n % 2 == 0</code> tests for an even number.</p></div>
+  </div>
+</section>
+
+<!-- 5 BITS -->
+<section class="panel" id="p-bits" data-title="Bitwise" hidden>
+  <div class="head"><h2>Bitwise playground</h2>
+  <p class="sub">Java <code>int</code> is 32 bits in two's complement. Pick an operator, change the numbers, or click any bit in the inputs to flip it.</p></div>
+  <div class="card">
+    <div class="ops" id="ops" role="group" aria-label="Operator"></div>
+    <div class="row">
+      <label class="label" for="bA">a</label><input type="number" id="bA" value="30" style="width:130px">
+      <label class="label" for="bB" id="bBLab">b</label><input type="number" id="bB" value="6" style="width:130px">
+    </div>
+    <div class="bitrows" id="bitrows"></div>
+    <div class="callout" id="bitNote"></div>
+  </div>
+</section>
+
+<!-- 6 LOGIC -->
+<section class="panel" id="p-logic" data-title="Relational & logical" hidden>
+  <div class="head"><h2>Relational and logical operators</h2>
+  <p class="sub">Relational operators compare two values and return a <code>boolean</code>. <code>&amp;&amp;</code> and <code>||</code> short-circuit: the right side only runs when it can still change the answer.</p></div>
+  <div class="grid2">
+    <div class="card">
+      <h3>Compare</h3>
+      <div class="row"><input type="number" id="rA" value="2" style="width:90px" aria-label="Left value"><input type="number" id="rB" value="4" style="width:90px" aria-label="Right value"></div>
+      <div class="tw"><table><tbody id="relRows"></tbody></table></div>
+    </div>
+    <div class="card">
+      <h3>Short-circuit: avoid dividing by zero</h3>
+      <pre class="code" id="scCode"></pre>
+      <div class="row"><label class="label" for="scX">x =</label><input type="number" id="scX" value="0" style="width:90px">
+        <span class="ops" id="scOps" role="group" aria-label="Logical operator"></span></div>
+      <div id="scOut"></div>
+    </div>
+  </div>
+</section>
+
+<!-- 7 TRACE -->
+<section class="panel" id="p-trace" data-title="Output?" hidden>
+  <div class="head"><h2>What is the output?</h2>
+  <p class="sub">The four programs from the slides, corrected so they compile. Write your prediction first, then run it and compare line by line.</p></div>
+  <div class="progs" id="progs" role="group" aria-label="Program"></div>
+  <div class="grid2">
+    <pre class="code" id="trCode"></pre>
+    <div class="card">
+      <div id="trInputs"></div>
+      <label class="label" for="trPredict">Your prediction</label>
+      <textarea class="predict" id="trPredict" spellcheck="false" placeholder="Type the output you expect, one line per println"></textarea>
+      <div class="row"><button class="btn" id="trRun">Run</button><button class="btn ghost" id="trReset">Clear</button></div>
+      <div class="console" id="trConsole" aria-live="polite"><span class="p">$ java …</span></div>
+      <div class="cmp" id="trCmp"></div>
+      <div class="callout" id="trWhy" hidden></div>
+    </div>
+  </div>
+</section>
+
+<!-- 8 QUIZ -->
+<section class="panel" id="p-quiz" data-title="Quiz" hidden>
+  <div class="head"><h2>Self-test</h2><p class="sub">Twelve questions covering the whole week. Each answer comes with the reasoning.</p></div>
+  <div class="card" id="quiz"></div>
+</section>
+
+<!-- 9 CHECKLIST -->
+<section class="panel" id="p-check" data-title="Checklist" hidden>
+  <div class="head"><h2>Revision checklist</h2><p class="sub">Tick each item once you can do it without notes. Your ticks are saved in this browser.</p></div>
+  <div class="card"><div class="row" style="justify-content:space-between"><b id="ckCount"></b><button class="btn ghost" id="ckReset">Untick all</button></div>
+  <div class="checks" id="checks"></div></div>
+</section>
+
+</main>
+
+<script>
+(function(){
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+const KW="class|public|static|void|int|boolean|double|float|long|short|byte|char|new|import|final|String|true|false";
+function hl(src){
+  const re=new RegExp(`(\\/\\/[^\\n]*)|("(?:[^"\\\\]|\\\\.)*")|('(?:[^'\\\\]|\\\\.)*')|\\b(${KW})\\b|\\b(0[xXbB][0-9a-fA-F_]+[lL]?|\\d[\\d_]*(?:\\.\\d+)?(?:[eE]\\d+)?[fFdDlL]?)\\b`,"g");
+  let out="",last=0,m;
+  while((m=re.exec(src))){out+=esc(src.slice(last,m.index));
+    const cls=m[1]?"c":(m[2]||m[3])?"s":m[4]?"k":"nm";out+=`<span class="${cls}">${esc(m[0])}</span>`;last=re.lastIndex;}
+  return out+esc(src.slice(last));
+}
+const store={get(k,d){try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+
+/* ---------- Tabs ---------- */
+const panels=[...document.querySelectorAll("section.panel")];
+const tl=$("#tablist");
+panels.forEach((p,i)=>{const b=document.createElement("button");b.className="tab";b.role="tab";b.id="t-"+p.id.slice(2);
+  b.innerHTML=`<span class="n">${String(i+1).padStart(2,"0")}</span>${p.dataset.title}`;b.onclick=()=>show(p.id.slice(2));tl.appendChild(b);});
+function show(id){panels.forEach(p=>p.hidden=p.id!=="p-"+id);
+  tl.querySelectorAll(".tab").forEach(t=>t.setAttribute("aria-selected",t.id==="t-"+id));
+  try{history.replaceState(null,"","#"+id)}catch(e){}
+  const t=$("#t-"+id);if(t)t.scrollIntoView({block:"nearest",inline:"nearest"});}
+const start=(location.hash||"").slice(1);
+show(panels.some(p=>p.id==="p-"+start)?start:"structure");
+
+/* ---------- Hello world ---------- */
+const parts={
+  class:["class","Declares a class. Every Java program lives inside at least one class. The name after it, HelloWorldApp, is the class name."],
+  name:["HelloWorldApp","The class name. If the class were public, the file would have to be named HelloWorldApp.java (case-sensitive)."],
+  public:["public","An access modifier: visible to all classes. The JVM must be able to reach main, so it is public."],
+  static:["static","Belongs to the class, not to an object. The JVM can call main without creating an object first."],
+  void:["void","The return type. main returns nothing."],
+  main:["main","The entry point. Execution of the program starts here."],
+  args:["String[] args","A parameter: an array of Strings holding command-line arguments. java HelloWorldApp a b gives args[0] = \"a\"."],
+  println:["System.out.println()","Prints its argument to the console and moves to a new line. System.out.print() prints without the new line."],
+  str:["\"Hello World!\"","A String literal, in double quotes. Single quotes are only for one char, like 'C'."],
+  com:["// Display the text.","A single-line comment. The compiler ignores everything from // to the end of the line."]
+};
+const T=(k,t)=>`<span class="tok" tabindex="0" role="button" data-k="${k}">${esc(t)}</span>`;
+$("#hello").innerHTML=`${T("class","class")} ${T("name","HelloWorldApp")}
+{
+    ${T("public","public")} ${T("static","static")} ${T("void","void")} ${T("main","main")}(${T("args","String[] args")})
+    {
+        ${T("println","System.out.println")}(${T("str",'"Hello World!"')}); ${T("com","// Display the text.")}
+    }
+}`;
+function pick(k){document.querySelectorAll(".tok").forEach(t=>t.classList.toggle("on",t.dataset.k===k));
+  const [n,d]=parts[k];$("#explain").innerHTML=`<b>${esc(n)}</b><p>${esc(d)}</p>`;}
+$("#hello").addEventListener("click",e=>{const t=e.target.closest(".tok");if(t)pick(t.dataset.k)});
+$("#hello").addEventListener("keydown",e=>{const t=e.target.closest(".tok");if(t&&(e.key==="Enter"||e.key===" ")){e.preventDefault();pick(t.dataset.k)}});
+pick("static");
+
+/* ---------- Bicycles ---------- */
+$("#bikeCode").innerHTML=hl(`class Bicycle {
+    static int numGears = 6;      // class variable: one shared copy
+    int currentSpeed;             // instance variable: one per object
+
+    void speedUp(int increment) { // increment: parameter
+        int oldSpeed = currentSpeed;  // oldSpeed: local variable
+        currentSpeed = oldSpeed + increment;
+    }
+}`);
+let gears=6,bikes=[{id:1,speed:0},{id:2,speed:10}],nextId=3;
+function renderBikes(flash){
+  $("#gears").textContent=gears;
+  $("#bikes").innerHTML=bikes.map(b=>`<div class="bike${flash==="all"||flash===b.id?" flash":""}">
+    <div class="name">b${b.id}</div>
+    <div class="kv"><span>currentSpeed</span><span>${b.speed}</span></div>
+    <div class="kv"><span>numGears</span><span>${gears}</span></div>
+    <button class="btn ghost" data-id="${b.id}">speedUp(5)</button></div>`).join("");
+  $("#bikeCount").textContent=`${bikes.length} object${bikes.length===1?"":"s"}, 1 numGears`;
+  $("#newBike").disabled=bikes.length>=4;
+}
+$("#bikes").addEventListener("click",e=>{const btn=e.target.closest("button");if(!btn)return;
+  const b=bikes.find(x=>x.id==+btn.dataset.id);const old=b.speed;b.speed=old+5;
+  $("#bikeLog").innerHTML=`b${b.id}.speedUp(5): parameter <b>increment = 5</b>, local <b>oldSpeed = ${old}</b> → currentSpeed = <b>${b.speed}</b>. The method ends, so increment and oldSpeed are gone. Other bicycles are unchanged.`;
+  renderBikes(b.id);});
+$("#newBike").onclick=()=>{bikes.push({id:nextId++,speed:0});$("#bikeLog").innerHTML=`new Bicycle(): fields get default values, so <b>currentSpeed = 0</b>. It sees the same numGears = ${gears}.`;renderBikes();};
+function setGears(d){gears=Math.max(1,gears+d);$("#bikeLog").innerHTML=`Bicycle.numGears changed to <b>${gears}</b>. Every bicycle shows the new value, because there is only one copy.`;renderBikes("all");}
+$("#gearUp").onclick=()=>setGears(1);$("#gearDown").onclick=()=>setGears(-1);
+renderBikes();
+
+/* ---------- Types ---------- */
+const types=[
+ ["byte",8,"0","-128 to 127",-(2n**7n),2n**7n-1n],
+ ["short",16,"0","-32,768 to 32,767",-(2n**15n),2n**15n-1n],
+ ["int",32,"0","-2³¹ to 2³¹-1 (±2.1 billion)",-(2n**31n),2n**31n-1n],
+ ["long",64,"0L","-2⁶³ to 2⁶³-1",-(2n**63n),2n**63n-1n],
+ ["float",32,"0.0f","±3.4 × 10³⁸, ~7 digits"],
+ ["double",64,"0.0d","±1.8 × 10³⁰⁸, ~15 digits"],
+ ["char",16,"'\\u0000'","0 to 65,535 (Unicode)",0n,65535n],
+ ["boolean",1,"false","true or false"]];
+$("#typeRows").innerHTML=types.map(t=>`<tr><td class="m"><b>${t[0]}</b></td><td class="m">${t[0]==="boolean"?"—":t[1]}</td>
+  <td><div class="bar" aria-hidden="true">${t[0]==="boolean"?"<i></i>":Array(t[1]/8).fill("<i></i>").join("")}</div></td>
+  <td class="m">${esc(t[2])}</td><td>${t[3]}</td></tr>`).join("");
+const fitSamples=["127","128","-32768","40000","2147483648","16777217","-1","65535"];
+$("#fitChips").innerHTML=fitSamples.map(s=>`<button class="chip" data-v="${s}">${s}</button>`).join("");
+$("#fitChips").onclick=e=>{const c=e.target.closest(".chip");if(c){$("#fitIn").value=c.dataset.v;fit();}};
+function fit(){
+  const raw=$("#fitIn").value.replace(/[_,\s]/g,"");
+  if(!/^-?\d+$/.test(raw)){$("#fitOut").innerHTML=`<div class="err" style="grid-column:1/-1">Enter a whole number, for example 40000 or -129.</div>`;return;}
+  const n=BigInt(raw),abs=n<0n?-n:n;
+  $("#fitOut").innerHTML=types.filter(t=>t[0]!=="boolean").map(t=>{
+    let cls,txt;
+    if(t[0]==="float"){cls=abs<=2n**24n?"yes":"warn";txt=cls==="yes"?"exact":"rounds";}
+    else if(t[0]==="double"){cls=abs<=2n**53n?"yes":"warn";txt=cls==="yes"?"exact":"rounds";}
+    else{cls=n>=t[4]&&n<=t[5]?"yes":"no";txt=cls==="yes"?"fits":"overflow";}
+    return `<div class="pill ${cls}"><span>${t[0]}</span><span>${txt}</span></div>`}).join("");
+}
+$("#fitIn").addEventListener("input",fit);fit();
+
+/* ---------- Literals ---------- */
+const litSamples=["26","0x1a","0b11010","1234_5678_9012_3456L","3000000000","010","09","0x_1a","100_","999_99_9999L","0xCAFE_BABE"];
+$("#litChips").innerHTML=litSamples.map(s=>`<button class="chip" data-v="${s}">${s}</button>`).join("");
+$("#litChips").onclick=e=>{const c=e.target.closest(".chip");if(c){$("#litIn").value=c.dataset.v;lit();}};
+function group(s,n){let o="";for(let i=s.length;i>0;i-=n)o=s.slice(Math.max(0,i-n),i)+(o?"_"+o:"");return o;}
+function lit(){
+  let s=$("#litIn").value.trim(),err=null,note="",base=10,isLong=false;
+  const fail=m=>{$("#litStatus").innerHTML=`<div class="err"><b>Does not compile.</b> ${m}</div>`;$("#litOut").innerHTML=`<p class="sub">Fix the literal to see its value.</p>`;};
+  if(!s)return fail("Type a literal.");
+  if(/[lL]$/.test(s)){isLong=true;s=s.slice(0,-1);if(s.endsWith("_"))return fail("An underscore cannot sit right before the L suffix.");}
+  let body=s,prefix="";
+  if(/^0[xX]/.test(s)){base=16;prefix="0x";body=s.slice(2);}
+  else if(/^0[bB]/.test(s)){base=2;prefix="0b";body=s.slice(2);}
+  else if(/^0[0-9_]+$/.test(s)){base=8;body=s.slice(1);note="A leading 0 makes this an <b>octal</b> (base 8) literal.";}
+  if(!body)return fail("There are no digits after the prefix.");
+  if(body.startsWith("_"))return fail(prefix?`An underscore cannot come right after ${prefix}.`:"A literal cannot start with an underscore.");
+  if(body.endsWith("_"))return fail("A literal cannot end with an underscore.");
+  const digits=body.replace(/_/g,"");
+  const ok={16:/^[0-9a-fA-F]+$/,2:/^[01]+$/,8:/^[0-7]+$/,10:/^[0-9]+$/}[base];
+  if(!ok.test(digits))return fail(base===8?"Octal literals use digits 0–7 only, so 8 and 9 are illegal after a leading 0.":base===2?"Binary literals use only 0 and 1.":base===16?"Hex literals use 0–9 and a–f.":"Only digits and underscores are allowed in an integer literal.");
+  let v=BigInt((base===16?"0x":base===2?"0b":base===8?"0o":"")+digits);
+  const type=isLong?"long":"int",bits=isLong?64n:32n;
+  if(base===10){if(v>2n**(bits-1n)-1n)return fail(isLong?"Too large even for a long.":"This number is too large for an int. Add an <code>L</code> to make it a long literal.");}
+  else{if(v>2n**bits-1n)return fail(`Too many bits for ${isLong?"a long":"an int. Add an <code>L</code> suffix"}.`);
+    if(v>2n**(bits-1n)-1n){v-=2n**bits;note+=` The top bit is set, so as a two's-complement ${type} this is negative.`;}}
+  $("#litStatus").innerHTML=`<div class="ok"><b>Compiles</b> as a <code>${type}</code> literal.${note?" "+note:""}</div>`;
+  const u=v<0n?v+2n**bits:v;
+  const bin=u.toString(2),hex=u.toString(16).toUpperCase();
+  $("#litOut").innerHTML=[["type",type],["decimal",v.toLocaleString("en-US")],["hex","0x"+group(hex,4)+(isLong?"L":"")],["binary","0b"+group(bin,4)+(isLong?"L":"")],["octal","0"+u.toString(8)]]
+    .map(([a,b])=>`<div class="outrow"><span>${a}</span><span>${b}</span></div>`).join("");
+}
+$("#litIn").addEventListener("input",lit);lit();
+
+/* ---------- Precedence ---------- */
+const exSamples=["10 + 6 / 4 * 2","20 / 4 * 2","(2 + 3) * 4","17 % 5 + 3 * 2","7 / 2 * 2 + 7 % 2","-7 / 2","12 - (8 - 2 * 3) % 4"];
+$("#exChips").innerHTML=exSamples.map(s=>`<button class="chip" data-v="${s}">${s}</button>`).join("");
+$("#exChips").onclick=e=>{const c=e.target.closest(".chip");if(c){$("#exIn").value=c.dataset.v;evalEx();}};
+function tokenize(s){const t=[];let i=0;
+  while(i<s.length){const ch=s[i];
+    if(/\s/.test(ch)){i++;continue;}
+    if(/\d/.test(ch)||(ch==="-"&&/\d/.test(s[i+1]||"")&&(t.length===0||typeof t[t.length-1]==="string"&&t[t.length-1]!==")"))){
+      let j=i+1;while(j<s.length&&/[\d_]/.test(s[j]))j++;t.push(parseInt(s.slice(i,j).replace(/_/g,""),10));i=j;continue;}
+    if("+-*/%()".includes(ch)){t.push(ch);i++;continue;}
+    throw new Error(`"${ch}" is not supported. Use integers, + - * / % and parentheses.`);}
+  return t;}
+const fmt=(t,a,b)=>t.map((x,i)=>{const v=typeof x==="number"&&x<0&&i>0&&typeof t[i-1]==="number"?x:x;const s=String(v);return i===a?"<mark>"+s:i===b?s+"</mark>":s}).join(" ").replace(/\( /g,"(").replace(/ \)/g,")");
+function evalEx(){
+  const ol=$("#exSteps");let t;
+  try{t=tokenize($("#exIn").value);if(!t.length)throw new Error("Type an expression such as 10 + 6 / 4 * 2.");}
+  catch(e){ol.innerHTML=`<li><span></span><span class="err">${esc(e.message)}</span></li>`;return;}
+  const steps=[];let guard=0;
+  try{
+    while(t.length>1&&guard++<60){
+      let close=t.indexOf(")"),open=-1;
+      if(close>=0){for(let i=close;i>=0;i--)if(t[i]==="("){open=i;break;}if(open<0)throw new Error("Unbalanced parentheses.");}
+      else{if(t.includes("("))throw new Error("Unbalanced parentheses.");open=-1;close=t.length;}
+      const lo=open+1,hi=close;
+      if(hi-lo===1&&open>=0){steps.push({h:fmt(t,open,close),why:"Parentheses around a single value are removed."});t.splice(close,1);t.splice(open,1);continue;}
+      let k=-1;for(let i=lo;i<hi;i++)if("*/%".includes(t[i])&&typeof t[i]==="string"){k=i;break;}
+      let why=open>=0?"Inside parentheses first. ":"";
+      if(k<0){for(let i=lo;i<hi;i++)if(t[i]==="+"||t[i]==="-"){k=i;break;}why+="Only + and - left, so the leftmost runs.";}
+      else why+=`${t[k]} has higher precedence than + and -; leftmost first.`;
+      if(k<0)throw new Error("Expression is incomplete. Check for a missing number or operator.");
+      const a=t[k-1],b=t[k+1];if(typeof a!=="number"||typeof b!=="number")throw new Error("Expression is incomplete. Check for a missing number or operator.");
+      let r;
+      if(t[k]==="/"||t[k]==="%"){if(b===0)throw new Error("ArithmeticException: / by zero. Java throws this at runtime for integer division by zero.");}
+      r=t[k]==="+"?a+b:t[k]==="-"?a-b:t[k]==="*"?Math.imul(a,b):t[k]==="/"?Math.trunc(a/b):a%b; r|=0;
+      if(t[k]==="/"&&a%b!==0)why+=` ${a} / ${b} truncates to ${r}.`;
+      steps.push({h:fmt(t,k-1,k+1),why});
+      t.splice(k-1,3,r);
+    }
+    if(t.length!==1||typeof t[0]!=="number")throw new Error("Expression is incomplete.");
+    steps.push({h:String(t[0]),final:true});
+    ol.innerHTML=steps.map(s=>`<li class="${s.final?"final":""}"><span>${s.final?"= "+s.h:s.h}</span>${s.why?`<span class="why">${esc(s.why)}</span>`:""}</li>`).join("");
+  }catch(e){ol.innerHTML=steps.map(s=>`<li><span>${s.h}</span></li>`).join("")+`<li><span class="err">${esc(e.message)}</span></li>`;}
+}
+$("#exGo").onclick=evalEx;$("#exIn").addEventListener("keydown",e=>{if(e.key==="Enter")evalEx()});evalEx();
+
+/* ---------- Bits ---------- */
+const OPS=["&","|","^","~","<<",">>",">>>"];let op="&";
+$("#ops").innerHTML=OPS.map(o=>`<button class="op" data-o="${o}" aria-pressed="${o===op}">${esc(o)}</button>`).join("");
+$("#ops").onclick=e=>{const b=e.target.closest(".op");if(!b)return;op=b.dataset.o;
+  if(["<<",">>",">>>"].includes(op)&&(+$("#bB").value>31||+$("#bB").value<0))$("#bB").value=2;
+  $("#ops").querySelectorAll(".op").forEach(x=>x.setAttribute("aria-pressed",x.dataset.o===op));bits();};
+const b32=n=>(n>>>0).toString(2).padStart(32,"0");
+function cells(n,row){const s=b32(n);let h="";for(let g=0;g<8;g++){h+=`<span class="g">`;for(let i=g*4;i<g*4+4;i++)h+=`<button class="cell${s[i]==="1"?" on":""}" data-row="${row}" data-bit="${31-i}" ${row==="r"?"tabindex=-1":""} aria-label="bit ${31-i}">${s[i]}</button>`;h+="</span>";}return `<div class="cells">${h}</div>`;}
+function bits(){
+  const a=(+$("#bA").value)|0,b=(+$("#bB").value)|0,shift=["<<",">>",">>>"].includes(op),unary=op==="~";
+  $("#bB").hidden=unary;$("#bBLab").hidden=unary;$("#bBLab").textContent=shift?"shift by":"b";
+  let r,expr;
+  switch(op){case"&":r=a&b;break;case"|":r=a|b;break;case"^":r=a^b;break;case"~":r=~a;break;case"<<":r=a<<b;break;case">>":r=a>>b;break;case">>>":r=a>>>b;break;}
+  expr=unary?`~${a}`:`${a} ${op} ${b}`;
+  const row=(lab,n,id,cls="")=>`<div class="bitrow ${cls}"><span class="lab">${lab}</span>${cells(n,id)}<span class="dec">${n}</span></div>`;
+  let h=row("a",a,"a");if(!unary&&!shift)h+=row("b",b,"b");
+  h+=`<div class="rule"></div>`+row(esc(expr),r,"r","res");
+  $("#bitrows").innerHTML=h;
+  const notes={"&":"AND: a result bit is 1 only where both bits are 1.","|":"OR: a result bit is 1 where either bit is 1.","^":"XOR: a result bit is 1 where the bits differ.",
+   "~":`Complement flips all 32 bits, including the sign bit. ~n is always -(n + 1), so ~${a} = ${r}.`,
+   "<<":`Left shift moves bits left and fills with 0. Each place multiplies by 2: ${a} × 2^${b} = ${r}${(a*2**b)!==r?" (bits fell off the left, so it overflowed)":""}.`,
+   ">>":`Signed right shift copies the sign bit into the gap. For ${a}, that is ${a} ÷ 2^${b} rounded down = ${r}.`,
+   ">>>":`Unsigned right shift fills with 0 regardless of sign. ${a<0?"Because a is negative, the result is a large positive number, unlike >>.":"For a positive number this matches >>. Try a negative a to see the difference."}`};
+  $("#bitNote").innerHTML=notes[op]+(shift&&(b<0||b>31)?" Java only uses the low 5 bits of the shift amount for int.":"");
+}
+$("#bitrows").addEventListener("click",e=>{const c=e.target.closest(".cell");if(!c||c.dataset.row==="r")return;
+  const inp=c.dataset.row==="a"?$("#bA"):$("#bB");inp.value=((+inp.value|0)^(1<<+c.dataset.bit))|0;bits();});
+$("#bA").addEventListener("input",bits);$("#bB").addEventListener("input",bits);bits();
+
+/* ---------- Relational & logical ---------- */
+function rel(){const a=+$("#rA").value,b=+$("#rB").value;
+  $("#relRows").innerHTML=[["==",a===b],["!=",a!==b],[">",a>b],["<",a<b],[">=",a>=b],["<=",a<=b]]
+   .map(([o,v])=>`<tr><td class="m">${a} ${esc(o)} ${b}</td><td style="text-align:right"><span class="pill ${v?"yes":"no"}" style="display:inline-flex">${v}</span></td></tr>`).join("");}
+$("#rA").addEventListener("input",rel);$("#rB").addEventListener("input",rel);rel();
+let sc="&&";
+$("#scOps").innerHTML=["&&","&"].map(o=>`<button class="op" data-o="${o}" aria-pressed="${o===sc}">${esc(o)}</button>`).join("");
+$("#scOps").onclick=e=>{const b=e.target.closest(".op");if(!b)return;sc=b.dataset.o;$("#scOps").querySelectorAll(".op").forEach(x=>x.setAttribute("aria-pressed",x.dataset.o===sc));scRun();};
+function scRun(){const x=+$("#scX").value|0;
+  $("#scCode").innerHTML=hl(`int x = ${x};\nboolean r = (x != 0) ${sc} (10 / x > 1);\nSystem.out.println(r);`);
+  const left=x!==0;let msg;
+  if(!left&&sc==="&&")msg=`<div class="ok">Prints <b>false</b>. The left side is false, so <code>&amp;&amp;</code> already knows the answer and never runs <code>10 / x</code>.</div>`;
+  else if(!left&&sc==="&")msg=`<div class="err"><b>Exception in thread "main" java.lang.ArithmeticException: / by zero.</b> Plain <code>&amp;</code> evaluates both sides, so the division runs with x = 0.</div>`;
+  else{const r=Math.trunc(10/x)>1;msg=`<div class="ok">Prints <b>${r}</b>. The left side is true, so the right side runs: 10 / ${x} = ${Math.trunc(10/x)}, which is ${r?"":"not "}greater than 1.</div>`;}
+  $("#scOut").innerHTML=msg;}
+$("#scX").addEventListener("input",scRun);scRun();
+
+/* ---------- Tracer ---------- */
+const progs={
+ Arith:{code:`public class Arith {
+    public static void main(String[] args) {
+        int number1 = 12, number2 = 4;
+        int sum = number1 + number2;
+        System.out.println("Sum is: " + sum);
+        int dif = number1 - number2;
+        System.out.println("Difference is : " + dif);
+        int mul = number1 * number2;
+        System.out.println("Multiplied value is : " + mul);
+        int div = number1 / number2;
+        System.out.println("Quotient is : " + div);
+        int rem = number1 % number2;
+        System.out.println("Remainder is : " + rem);
+    }
+}`,run:()=>["Sum is: 16","Difference is : 8","Multiplied value is : 48","Quotient is : 3","Remainder is : 0"],
+ why:"12 ÷ 4 divides exactly, so the quotient is 3 and the remainder 0. On the slide, the div and rem lines sit after // comments, so they would not compile; here each is on its own line."},
+ Relation:{code:`public class Relation {
+    public static void main(String[] args) {
+        int one = 1, two = 2, three = 3, four = 4;
+        boolean oneIsOne = one == one;
+        boolean res1 = two <= three;
+        boolean res2 = two != four;
+        boolean res3 = two > four;
+        boolean res4 = one == three;
+        System.out.println("one == one " + oneIsOne);
+        System.out.println("two <= three " + res1);
+        System.out.println("two != four " + res2);
+        System.out.println("two > four " + res3);
+        System.out.println("one == three " + res4);
+    }
+}`,run:()=>["one == one true","two <= three true","two != four true","two > four false","one == three false"],
+ why:"Each comparison returns a boolean, which + turns into the text true or false. The slide version used oneIsone (wrong case) and curly quotes, which do not compile."},
+ CheckDescOrder:{inputs:true,code:`import java.util.Scanner;
+
+public class CheckDescOrder {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        int h1 = scanner.nextInt();
+        int h2 = scanner.nextInt();
+        int h3 = scanner.nextInt();
+        boolean descOrdered = (h1 >= h2) && (h2 >= h3);
+        System.out.println(descOrdered);
+    }
+}`,run:()=>{const [a,b,c]=["#in1","#in2","#in3"].map(s=>+$(s).value|0);return [String(a>=b&&b>=c)]},
+ why:null},
+ bitwiseop:{code:`public class bitwiseop {
+    public static void main(String[] args) {
+        int num1 = 30, num2 = 6, num3 = 0;
+        System.out.println("num1 & num2 = " + (num1 & num2));
+        System.out.println("num1 | num2 = " + (num1 | num2));
+        System.out.println("num1 ^ num2 = " + (num1 ^ num2));
+        System.out.println("~num1 = " + ~num1);
+        num3 = num1 << 2;  System.out.println("num1 << 1 = " + num3);
+        num3 = num1 >> 2;  System.out.println("num1 >> 1 = " + num3);
+        num3 = num1 >>> 2; System.out.println("num1 >>> 1 = " + num3);
+    }
+}`,run:()=>["num1 & num2 = 6","num1 | num2 = 30","num1 ^ num2 = 24","~num1 = -31","num1 << 1 = 120","num1 >> 1 = 7","num1 >>> 1 = 7"],
+ why:"30 = 11110 and 6 = 00110. AND gives 00110 = 6, OR 11110 = 30, XOR 11000 = 24, ~30 = -31. Trap: the labels say shift by 1, but the code shifts by 2, so the values are 120 and 7. Java prints label text exactly as written."}
+};
+let cur="Arith";
+$("#progs").innerHTML=Object.keys(progs).map(k=>`<button class="op" data-p="${k}" aria-pressed="${k===cur}">${k}</button>`).join("");
+$("#progs").onclick=e=>{const b=e.target.closest(".op");if(!b)return;cur=b.dataset.p;$("#progs").querySelectorAll(".op").forEach(x=>x.setAttribute("aria-pressed",x.dataset.p===cur));loadProg();};
+let typing=null;
+function loadProg(){const p=progs[cur];$("#trCode").innerHTML=hl(p.code);
+  $("#trInputs").innerHTML=p.inputs?`<div class="label" style="margin-bottom:8px">Keyboard input (h1 h2 h3)</div><div class="row"><input type="number" id="in1" value="9" style="width:80px" aria-label="h1"><input type="number" id="in2" value="5" style="width:80px" aria-label="h2"><input type="number" id="in3" value="7" style="width:80px" aria-label="h3"></div>`:"";
+  $("#trPredict").value="";resetRun();}
+function resetRun(){clearInterval(typing);$("#trConsole").innerHTML=`<span class="p">$ java ${cur}</span>`;$("#trCmp").innerHTML="";$("#trWhy").hidden=true;}
+$("#trReset").onclick=()=>{$("#trPredict").value="";resetRun();};
+$("#trRun").onclick=()=>{resetRun();const p=progs[cur],lines=p.run();
+  const con=$("#trConsole");let i=0;
+  const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const finish=()=>{
+    const pred=$("#trPredict").value.split("\n").map(s=>s.trimEnd()).filter((s,ix,arr)=>s!==""||ix<arr.length-1);
+    if(pred.length&&pred.some(s=>s.trim())){const ok=lines.filter((l,ix)=>(pred[ix]||"").trim()===l.trim()).length;
+      $("#trCmp").innerHTML=`<div class="label" style="padding:0;margin:6px 0 2px">Your prediction: ${ok} of ${lines.length} lines exact</div>`+lines.map((l,ix)=>{const m=(pred[ix]||"").trim()===l.trim();return `<div class="${m?"y":"n"}">${m?"✓":"✗"} ${esc(pred[ix]||"(missing)")}${m?"":"  →  expected: "+esc(l)}</div>`}).join("");}
+    let why=p.why;
+    if(cur==="CheckDescOrder"){const [a,b,c]=["#in1","#in2","#in3"].map(s=>+$(s).value|0);
+      why=a>=b?`h1 >= h2 is true (${a} ≥ ${b}), so && checks h2 >= h3: ${b} ≥ ${c} is ${b>=c}. Output: ${b>=c}.`:`h1 >= h2 is false (${a} < ${b}). && short-circuits: h2 >= h3 is never evaluated. Output: false.`;}
+    $("#trWhy").innerHTML=esc(why);$("#trWhy").hidden=false;};
+  if(cur==="CheckDescOrder"){const [a,b,c]=["#in1","#in2","#in3"].map(s=>$(s).value);con.innerHTML+="\n"+esc(`${a} ${b} ${c}`);}
+  if(reduce){con.innerHTML+="\n"+lines.map(esc).join("\n");finish();return;}
+  typing=setInterval(()=>{if(i>=lines.length){clearInterval(typing);finish();return;}con.innerHTML+="\n"+esc(lines[i++]);},260);};
+loadProg();
+
+/* ---------- Quiz ---------- */
+const Q=[
+ ["Which declaration compiles?",["float f = 3.14;","float f = 3.14f;",'float f = "3.14";',"float f = '3.14';"],1,"A decimal literal is a double by default. The f suffix makes it a float."],
+ ["What is the default value of a boolean field?",["true","0","false","null"],2,"Numeric fields default to 0, boolean to false, objects to null."],
+ ["What is 17 % 5?",["3","2","3.4","0"],1,"17 = 5 × 3 + 2, so the remainder is 2."],
+ ["What is 10 + 6 / 4 * 2?",["13","8","12","11"],2,"6 / 4 is 1 (integer division), 1 * 2 is 2, then 10 + 2 = 12."],
+ ["What is 12 ^ 10?",["8","14","6","2"],2,"1100 XOR 1010 = 0110, which is 6."],
+ ["What is ~7?",["-7","-8","8","0"],1,"~n is always -(n + 1)."],
+ ["What is the largest value a byte can hold?",["255","128","127","32,767"],2,"A byte is 8-bit signed: -128 to 127."],
+ ["Which keyword gives a field one copy shared by all objects?",["final","public","void","static"],3,"static fields belong to the class, so all objects share them."],
+ ["What are 0b1010 and 0x1F in decimal?",["10 and 31","12 and 15","10 and 15","1010 and 1F"],0,"0b1010 = 8 + 2 = 10; 0x1F = 16 + 15 = 31."],
+ ["After int x = 5; int y = x++ + ++x; what are x and y?",["x=6, y=11","x=7, y=12","x=7, y=13","x=6, y=12"],1,"x++ gives 5 then x is 6. ++x makes x 7 and gives 7. y = 5 + 7 = 12."],
+ ['What does System.out.println("Total: " + 4 + 5); print?',["Total: 9","Total: 45","Total: 4 5","Compile error"],1,"Left to right: the String comes first, so 4 and then 5 are joined as text."],
+ ["A local variable is declared as int count; and then count++ is used. What happens?",["count becomes 1","count becomes 0","Compile error","Runtime exception"],2,"Local variables get no default value. Using one before assigning it is a compile error."]
+];
+let qi=0,score=0,answered=false;
+function renderQ(){
+  const box=$("#quiz");
+  if(qi>=Q.length){const pct=Math.round(score/Q.length*100);
+    box.innerHTML=`<div class="label">Result</div><div class="score">${score} / ${Q.length}</div><p class="sub">${pct>=80?"Strong. Review any you missed, then try the Output? tab without predicting help.":pct>=50?"Good start. Revisit the tabs for the questions you missed and try again.":"Work through the lab tabs first, then try again."}</p><div><button class="btn" id="qAgain">Try again</button></div>`;
+    $("#qAgain").onclick=()=>{qi=0;score=0;renderQ();};return;}
+  const [q,opts]=Q[qi];answered=false;
+  box.innerHTML=`<div class="qhead"><span class="label">Question ${qi+1} of ${Q.length}</span><div class="progress"><i style="width:${qi/Q.length*100}%"></i></div><span class="label">Score ${score}</span></div>
+   <div class="qtext">${hl(q)}</div>
+   <div class="opts">${opts.map((o,i)=>`<button class="opt" data-i="${i}"><span class="l">${"ABCD"[i]}</span><span>${hl(o)}</span></button>`).join("")}</div>
+   <div id="qFb"></div>`;
+  box.querySelector(".opts").onclick=e=>{const b=e.target.closest(".opt");if(!b||answered)return;answered=true;
+    const pick=+b.dataset.i,right=Q[qi][2];if(pick===right)score++;
+    box.querySelectorAll(".opt").forEach((o,i)=>{o.disabled=true;if(i===right)o.classList.add("right");else if(i===pick)o.classList.add("wrong");});
+    $("#qFb").innerHTML=`<div class="${pick===right?"ok":"err"}" style="margin-bottom:12px"><b>${pick===right?"Correct.":"Not quite."}</b> ${esc(Q[qi][3])}</div><button class="btn" id="qNext">${qi+1<Q.length?"Next question":"See score"}</button>`;
+    $("#qNext").onclick=()=>{qi++;renderQ();};$("#qNext").focus();};
+}
+renderQ();
+
+/* ---------- Checklist ---------- */
+const CK=["Explain each keyword in public static void main(String[] args)","State the file-naming rule for a public class","Name the four kinds of variables and say which get default values","Write all eight primitive types with size, default and range","Write 26 as decimal, hexadecimal and binary literals","Use L and f suffixes correctly and place underscores legally","Predict results of / and % on integers","Explain prefix ++x versus postfix x++","Apply precedence: * / % before + -, equal precedence left to right","Use the six relational operators and know they return boolean","Explain short-circuit && and ||","Compute & | ^ ~ << >> >>> on small integers by hand","Trace all four Output? programs and get the exact output"];
+let done=store.get("jfl-checks",[]);
+function renderCk(){$("#checks").innerHTML=CK.map((c,i)=>`<label class="check${done.includes(i)?" done":""}"><input type="checkbox" id="ck${i}" data-i="${i}" ${done.includes(i)?"checked":""}><span>${esc(c)}</span></label>`).join("");
+  $("#ckCount").textContent=`${done.length} of ${CK.length} ready`;}
+$("#checks").addEventListener("change",e=>{const i=+e.target.dataset.i;done=e.target.checked?[...new Set([...done,i])]:done.filter(x=>x!==i);store.set("jfl-checks",done);renderCk();});
+$("#ckReset").onclick=()=>{done=[];store.set("jfl-checks",done);renderCk();};
+renderCk();
+})();
+</script>
+
+</body></html>
